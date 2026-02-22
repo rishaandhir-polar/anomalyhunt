@@ -50,11 +50,13 @@ const ROOM_LABELS = [
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function formatTime(seconds) {
-    const total = Math.floor(seconds / 3600) * 60 + Math.floor((seconds % 3600) / 60);
-    let h = Math.floor(total / 60) % 12 || 12;
-    let m = total % 60;
-    const ampm = total < 720 ? 'AM' : 'PM';
-    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} ${ampm}`;
+    // Start at midnight (00:00)
+    const totalMinutes = Math.floor(seconds / 60);
+    let h = Math.floor(totalMinutes / 60) % 24;
+    let m = totalMinutes % 60;
+    const ampm = h < 12 ? 'AM' : 'PM';
+    const displayHour = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+    return `${String(displayHour).padStart(2, '0')}:${String(m).padStart(2, '0')} ${ampm}`;
 }
 
 function updateGlitch() {
@@ -94,6 +96,11 @@ submitReport.addEventListener('click', () => {
     if (resolved) {
         sound.playSuccess();
         statsCount.textContent = engine.anomalyManager.undetectedCount;
+        // Hide alert if no anomalies remain
+        if (engine.anomalyManager.undetectedCount === 0) {
+            anomalyAlert.classList.add('hidden');
+            sound.setAmbientTension(false);
+        }
         updateGlitch();
     } else {
         sound.playFail();
@@ -123,9 +130,10 @@ function getSpawnDelay() {
 
 // ── Spawn loop ────────────────────────────────────────────────────────────────
 function startAnomalyLoop() {
-    // First anomaly after 60s to let player orient
+    let isFirstAnomaly = true;
     function scheduleNext() {
-        const delay = gameState === 'PLAYING' && gameTime === 0 ? 60000 : getSpawnDelay();
+        const delay = isFirstAnomaly ? 15000 : getSpawnDelay(); // First after 15s
+        isFirstAnomaly = false;
         anomalyInterval = setTimeout(() => {
             if (gameState !== 'PLAYING') return;
             const anomaly = engine.anomalyManager.triggerRandomAnomaly();
