@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>OBSERVATION | Anomaly Detection</title>
+    <link rel="stylesheet" href="src/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════ TITLE SCREEN ══ -->
+    <div id="game-modal">
+        <div class="modal-content">
+            <div class="title-blinker">■ FEED LIVE</div>
+            <h1 id="modal-title">OBSERVATION</h1>
+            <p id="modal-desc">MONITOR THE HOUSE. REPORT ANOMALIES.<br>DON'T LET THEM ACCUMULATE.</p>
+            <div class="modal-btn-row">
+                <button id="study-btn" class="btn-secondary">STUDY ROOMS</button>
+                <button id="start-btn" class="btn-start">BEGIN MISSION</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ SHIFT REPORT ══ -->
+    <div id="shift-report" class="hidden">
+        <div class="shift-report-content">
+            <div class="sr-title" id="sr-title">SHIFT COMPLETE — 06:00 AM</div>
+            <div class="sr-grid" id="sr-grid"></div>
+            <div class="sr-total" id="sr-total"></div>
+            <button id="sr-close-btn" class="btn-start" style="font-size:1rem;padding:0.8rem 2rem;">CONTINUE</button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ STUDY BANNER ══ -->
+    <div id="study-banner" class="hidden">
+        <div id="study-text">STUDY MODE — MEMORIZE THE BASELINE</div>
+        <button id="ready-btn">I'M READY — START MISSION</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ CCTV HUD ══ -->
+    <div id="cctv-ui" class="hidden">
+        <div class="overlay-scanline"></div>
+        <div class="overlay-vignette"></div>
+
+        <header>
+            <div id="cam-label">CAM 01 — LIVING ROOM</div>
+            <div id="timer">00:00 AM</div>
+        </header>
+
+        <div id="anomaly-alert" class="hidden">⚠ ANOMALY DETECTED IN HOUSE</div>
+
+        <nav id="cam-selector">
+            <button class="cam-btn active" data-cam="0">CAM 1</button>
+            <button class="cam-btn" data-cam="1">CAM 2</button>
+            <button class="cam-btn" data-cam="2">CAM 3</button>
+            <button class="cam-btn" data-cam="3">CAM 4</button>
+            <button class="cam-btn" data-cam="4">CAM 5</button>
+            <button class="cam-btn" data-cam="5">CAM 6</button>
+        </nav>
+
+        <div id="report-menu" class="hidden">
+            <div class="menu-header">⬤ FILE ANOMALY REPORT</div>
+            <div class="menu-body">
+                <select id="report-room">
+                    <option value="">— SELECT ROOM —</option>
+                    <option value="living-room">LIVING ROOM</option>
+                    <option value="kitchen">KITCHEN</option>
+                    <option value="bedroom">BEDROOM</option>
+                    <option value="hallway">HALLWAY</option>
+                    <option value="office">OFFICE</option>
+                    <option value="bathroom">BATHROOM</option>
+                </select>
+                <select id="report-type">
+                    <option value="">— SELECT TYPE —</option>
+                    <option value="displaced">DISPLACED OBJECT</option>
+                    <option value="extra">EXTRA OBJECT</option>
+                    <option value="light">LIGHTING ANOMALY</option>
+                    <option value="intruder">INTRUDER</option>
+                    <option value="missing">MISSING OBJECT</option>
+                    <option value="painting">PAINTING CHANGED</option>
+                    <option value="tv">TV TURNED ON</option>
+                </select>
+                <button id="submit-report">FILE CLAIM</button>
+                <button id="cancel-report">CANCEL</button>
+            </div>
+        </div>
+
+        <div id="stats">ANOMALIES: <span id="anomaly-count">0</span>/5</div>
+        <button id="report-btn">REPORT</button>
+    </div>
+
+    <div id="game-container"></div>
+    <script type="module" src="src/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,598 @@
+/* ═══════════════════════════════════ BASE ══ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #000;
+    color: #00ff00;
+    font-family: 'JetBrains Mono', monospace;
+    overflow: hidden;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+/* ═══════════════════════════════════ GLITCH EFFECT ══ */
+/* Light — triggers whenever any anomaly is active in the current cam */
+@keyframes cam-glitch {
+
+    0%,
+    90%,
+    100% {
+        transform: none;
+        filter: none;
+    }
+
+    91% {
+        transform: translateX(-3px);
+        filter: brightness(1.08) hue-rotate(6deg);
+    }
+
+    92% {
+        transform: translateX(2px);
+        filter: brightness(0.94);
+    }
+
+    93% {
+        transform: none;
+        filter: none;
+    }
+}
+
+@keyframes cam-glitch-h {
+
+    /* heavier variant — 2+ anomalies in current room */
+    0%,
+    82%,
+    100% {
+        transform: none;
+        filter: none;
+    }
+
+    83% {
+        transform: translateX(-5px) scaleX(1.01);
+        filter: hue-rotate(15deg) brightness(1.15) saturate(1.5);
+    }
+
+    84% {
+        transform: translateX(4px) scaleX(0.99);
+        filter: hue-rotate(-10deg) brightness(0.88);
+    }
+
+    85% {
+        transform: none;
+        filter: brightness(1.05);
+    }
+
+    86% {
+        transform: none;
+        filter: none;
+    }
+}
+
+.glitch-active #game-container {
+    animation: cam-glitch 3.5s infinite;
+}
+
+.glitch-heavy #game-container {
+    animation: cam-glitch-h 2.5s infinite;
+}
+
+/* ═══════════════════════════════════ MODAL / TITLE ══ */
+#game-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0, 0, 0, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    text-align: center;
+    border: 1px solid #00ff0033;
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(2rem, 8vw, 5rem);
+    max-width: min(560px, 92vw);
+    width: 100%;
+    background: linear-gradient(160deg, #0a120a, #060e06);
+    box-shadow: 0 0 60px #00ff0018;
+}
+
+.title-blinker {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: #ff0000;
+    animation: blink 1s step-end infinite;
+    margin-bottom: 0.8rem;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+#modal-title {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    letter-spacing: 8px;
+    color: #00ff00;
+    text-shadow: 0 0 20px #00ff00;
+    margin-bottom: 1rem;
+}
+
+#modal-desc {
+    color: #00bb00;
+    font-size: clamp(0.65rem, 2vw, 0.82rem);
+    letter-spacing: 2px;
+    line-height: 1.9;
+    margin-bottom: 2rem;
+}
+
+.modal-btn-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-start {
+    background: #00ff00;
+    color: #000;
+    border: none;
+    padding: 0.9rem 2.5rem;
+    font-family: inherit;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-start:hover {
+    background: #33ff33;
+    transform: scale(1.03);
+}
+
+.btn-start:active {
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 0.9rem 2rem;
+    font-family: inherit;
+    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #00ff0015;
+}
+
+/* ═══════════════════════════════════ SHIFT REPORT ══ */
+#shift-report {
+    position: fixed;
+    inset: 0;
+    z-index: 210;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#shift-report.hidden {
+    display: none;
+}
+
+.shift-report-content {
+    border: 1px solid #00ff0044;
+    background: #060e06;
+    padding: clamp(1.2rem, 4vw, 2.5rem) clamp(1.5rem, 5vw, 3rem);
+    max-width: min(640px, 94vw);
+    width: 100%;
+    box-shadow: 0 0 40px #00ff0012;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.sr-title {
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    letter-spacing: 4px;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+    border-bottom: 1px solid #00ff0033;
+    padding-bottom: 1rem;
+}
+
+.sr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+    gap: 0.75rem;
+}
+
+.sr-room-card {
+    border: 1px solid #00ff0022;
+    padding: 0.75rem 1rem;
+    background: #0a190a;
+}
+
+.sr-room-name {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #00cc00;
+    margin-bottom: 0.4rem;
+}
+
+.sr-room-stat {
+    font-size: 0.75rem;
+    color: #009900;
+}
+
+.sr-room-stat span {
+    color: #00ff00;
+}
+
+.sr-total {
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    letter-spacing: 2px;
+    color: #00cc00;
+    border-top: 1px solid #00ff0033;
+    padding-top: 1rem;
+}
+
+.sr-total strong {
+    color: #00ff00;
+}
+
+/* ═══════════════════════════════════ STUDY BANNER ══ */
+#study-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: linear-gradient(90deg, #0a0a00, #191900, #0a0a00);
+    border-bottom: 1px solid #ffff0055;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem clamp(1rem, 4vw, 2rem);
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+#study-banner.hidden {
+    display: none;
+}
+
+#study-text {
+    color: #ffff00;
+    font-size: clamp(0.65rem, 2vw, 0.8rem);
+    letter-spacing: 3px;
+    flex: 1;
+}
+
+#ready-btn {
+    background: #ffff00;
+    color: #000;
+    border: none;
+    padding: 0.55rem 1.4rem;
+    font-family: inherit;
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+#ready-btn:hover {
+    background: #ffff55;
+}
+
+/* ═══════════════════════════════════ CCTV UI LAYER ══ */
+#cctv-ui {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    color: #00ff00;
+    font-family: 'JetBrains Mono', monospace;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+#cctv-ui.hidden {
+    display: none;
+}
+
+.overlay-scanline {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom,
+            transparent 0px, transparent 3px,
+            rgba(0, 255, 0, 0.02) 3px, rgba(0, 255, 0, 0.02) 4px);
+    z-index: 1;
+}
+
+.overlay-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.65) 100%);
+    z-index: 1;
+}
+
+/* ── HEADER ── */
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(0.5rem, 2vw, 1rem) clamp(0.8rem, 3vw, 1.5rem);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+    z-index: 2;
+}
+
+#cam-label {
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    letter-spacing: 3px;
+}
+
+#timer {
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    letter-spacing: 2px;
+    color: #00cc00;
+}
+
+/* ── ANOMALY ALERT ── */
+#anomaly-alert {
+    position: absolute;
+    top: clamp(3rem, 8vw, 4rem);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff000022;
+    border: 1px solid #ff0000;
+    color: #ff4444;
+    padding: 0.45rem 1.5rem;
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+    letter-spacing: 3px;
+    text-shadow: 0 0 8px #ff0000;
+    z-index: 2;
+    animation: pulse-alert 1s ease-in-out infinite;
+}
+
+@keyframes pulse-alert {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+#anomaly-alert.hidden {
+    display: none;
+}
+
+/* ── CAM SELECTOR (bottom center) ── */
+#cam-selector {
+    position: absolute;
+    bottom: clamp(3.5rem, 10vw, 4.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: clamp(0.3rem, 1.5vw, 0.5rem);
+    pointer-events: all;
+    z-index: 2;
+    overflow-x: auto;
+    max-width: calc(100vw - 2rem);
+    padding: 0 0.5rem 0.25rem;
+    /* hide scrollbar on mobile */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#cam-selector::-webkit-scrollbar {
+    display: none;
+}
+
+.cam-btn {
+    background: rgba(0, 0, 0, 0.75);
+    color: #00ff00;
+    border: 1px solid #00ff0055;
+    padding: clamp(0.4rem, 1.5vw, 0.55rem) clamp(0.6rem, 2vw, 1rem);
+    font-family: inherit;
+    font-size: clamp(0.6rem, 1.8vw, 0.72rem);
+    letter-spacing: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+}
+
+.cam-btn:hover,
+.cam-btn.active {
+    background: #00ff00;
+    color: #000;
+    border-color: #00ff00;
+}
+
+/* ── STATS (top right HUD) ── */
+#stats {
+    position: absolute;
+    bottom: clamp(3.5rem, 10vw, 4.5rem);
+    right: clamp(0.8rem, 3vw, 1.5rem);
+    font-size: clamp(0.6rem, 1.8vw, 0.72rem);
+    letter-spacing: 2px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #00ff0033;
+    padding: 0.4rem 0.8rem;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#anomaly-count {
+    color: #ff4444;
+}
+
+/* ── REPORT BUTTON ── */
+#report-btn {
+    position: absolute;
+    bottom: clamp(0.6rem, 3vw, 1rem);
+    right: clamp(0.8rem, 3vw, 1.5rem);
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: clamp(0.5rem, 2vw, 0.7rem) clamp(1rem, 3vw, 1.6rem);
+    font-family: inherit;
+    font-size: clamp(0.65rem, 2vw, 0.8rem);
+    letter-spacing: 3px;
+    cursor: pointer;
+    pointer-events: all;
+    z-index: 2;
+    transition: all 0.15s;
+}
+
+#report-btn:hover {
+    background: #00ff00;
+    color: #000;
+}
+
+/* ── REPORT MENU (bottom sheet on mobile, left sidebar on desktop) ── */
+#report-menu {
+    position: absolute;
+    z-index: 3;
+    pointer-events: all;
+    background: rgba(5, 15, 5, 0.97);
+    border: 1px solid #00ff0055;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    /* Mobile: bottom sheet */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.2rem clamp(1rem, 5vw, 2rem) calc(1.2rem + env(safe-area-inset-bottom));
+}
+
+/* Desktop override */
+@media (min-width: 640px) {
+    #report-menu {
+        bottom: 1rem;
+        left: 1.5rem;
+        right: auto;
+        width: 280px;
+        padding: 1.2rem 1.5rem;
+        border-radius: 2px;
+    }
+}
+
+#report-menu.hidden {
+    display: none;
+}
+
+.menu-header {
+    font-size: 0.72rem;
+    letter-spacing: 3px;
+    color: #00ff00;
+    border-bottom: 1px solid #00ff0033;
+    padding-bottom: 0.5rem;
+}
+
+.menu-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.menu-body select {
+    background: #000;
+    color: #00ff00;
+    border: 1px solid #00ff0055;
+    padding: 0.5rem 0.8rem;
+    font-family: inherit;
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+    letter-spacing: 1px;
+    width: 100%;
+    appearance: none;
+    cursor: pointer;
+}
+
+.menu-body select option {
+    background: #000;
+}
+
+#submit-report,
+#cancel-report {
+    padding: 0.6rem 0;
+    font-family: inherit;
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+    letter-spacing: 3px;
+    cursor: pointer;
+    border: none;
+}
+
+#submit-report {
+    background: #00ff00;
+    color: #000;
+    font-weight: 700;
+}
+
+#submit-report:hover {
+    background: #33ff33;
+}
+
+#cancel-report {
+    background: transparent;
+    color: #007700;
+    border: 1px solid #00ff0033;
+}
+
+#cancel-report:hover {
+    border-color: #00ff00;
+    color: #00ff00;
+}
+
+/* On mobile, report+stats sit above cam selector */
+@media (max-width: 639px) {
+    #stats {
+        bottom: 4.5rem;
+        right: 0.75rem;
+        font-size: 0.6rem;
+    }
+
+    #report-btn {
+        bottom: 0.5rem;
+        right: 0.75rem;
+        font-size: 0.6rem;
+        padding: 0.5rem 1rem;
+    }
+
+    header {
+        padding: 0.5rem 0.75rem;
+    }
+}
