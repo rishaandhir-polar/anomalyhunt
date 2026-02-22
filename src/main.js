@@ -118,14 +118,9 @@ submitReport.addEventListener('click', () => {
 });
 
 // ── Adaptive spawn delay based on progress ───────────────────────────────────
-// Early shift: slow, forgiving (every 90-120s)
-// Mid shift:   moderate (every 60-80s)
-// Final 30%:   tense (every 35-55s)
+// Consistent fast pace: 15-25 seconds between anomalies
 function getSpawnDelay() {
-    const progress = gameTime / GAME_DURATION;
-    if (progress < 0.33) return 90000 + Math.random() * 30000;   // 90–120s
-    if (progress < 0.67) return 60000 + Math.random() * 20000;   // 60–80s
-    return 35000 + Math.random() * 20000;                        // 35–55s
+    return 15000 + Math.random() * 10000;  // 15-25s
 }
 
 // ── Spawn loop ────────────────────────────────────────────────────────────────
