@@ -68,9 +68,15 @@ export class GameUI {
         this.reportBtn.addEventListener('click', () => this.openReportMenu());
         this.cancelReport.addEventListener('click', () => this.closeReportMenu());
         this.submitReport.addEventListener('click', () => this.submitReportHandler());
-        populateAnomalyDropdown(this.reportType);
+        populateAnomalyDropdown(this.reportType, '');
         wireDescriptionDisplay(this.reportType, this.reportTypeDesc);
         wireKeyboardNav(this.reportType, () => this.closeReportMenu());
+
+        // Re-populate type dropdown whenever room changes
+        this.reportRoom.addEventListener('change', () => {
+            populateAnomalyDropdown(this.reportType, this.reportRoom.value);
+            if (this.reportTypeDesc) this.reportTypeDesc.textContent = '';
+        });
 
         this.studyBtn.addEventListener('click', () => {
             this.sound.init();
@@ -113,12 +119,23 @@ export class GameUI {
         this.updateGlitch();
     }
 
-    openReportMenu() { this.reportMenu.classList.toggle('hidden'); }
+    openReportMenu() {
+        // Pre-select the room the player is currently watching
+        const roomKeys = Object.keys(this.engine.rooms);
+        const currentRoom = roomKeys[this.engine.currentCamIndex] || '';
+        if (currentRoom && this.reportRoom.value !== currentRoom) {
+            this.reportRoom.value = currentRoom;
+            populateAnomalyDropdown(this.reportType, currentRoom);
+        }
+        this.reportMenu.classList.toggle('hidden');
+    }
 
     closeReportMenu() {
         this.reportMenu.classList.add('hidden');
         this.reportRoom.value = '';
         this.reportType.value = '';
+        populateAnomalyDropdown(this.reportType, '');
+        if (this.reportTypeDesc) this.reportTypeDesc.textContent = '';
     }
 
     submitReportHandler() {

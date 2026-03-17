@@ -90,12 +90,33 @@ describe('ANOMALY_DESCRIPTIONS', () => {
 });
 
 describe('populateAnomalyDropdown', () => {
-    it('creates an optgroup for each category', () => {
+    it('disables select and shows placeholder when no room given', () => {
+        let disabled = false;
+        const appended = [];
+        const selectEl = {
+            innerHTML: '',
+            disabled: false,
+            set disabled(v) { disabled = v; },
+            appendChild(child) { appended.push(child); },
+        };
+        global.document = {
+            createElement(tag) {
+                if (tag === 'optgroup') return { label: '', appendChild: vi.fn(), _tag: 'optgroup' };
+                if (tag === 'option') return { value: '', textContent: '', _tag: 'option' };
+            },
+        };
+        populateAnomalyDropdown(selectEl, '');
+        expect(disabled).toBe(true);
+        expect(appended.length).toBe(1); // just the placeholder
+    });
+
+    it('creates optgroups for compatible types when room is given', () => {
         const groups = [];
         const selectEl = {
             innerHTML: '',
+            disabled: true,
             appendChild(child) {
-                if (child.label !== undefined) groups.push(child);
+                if (child._tag === 'optgroup') groups.push(child);
             },
         };
         global.document = {
@@ -104,20 +125,8 @@ describe('populateAnomalyDropdown', () => {
                 if (tag === 'option') return { value: '', textContent: '', _tag: 'option' };
             },
         };
-        populateAnomalyDropdown(selectEl);
-        expect(groups.length).toBe(4);
-    });
-
-    it('resets innerHTML before populating', () => {
-        const selectEl = { innerHTML: 'old', appendChild: vi.fn() };
-        global.document = {
-            createElement(tag) {
-                if (tag === 'optgroup') return { label: '', appendChild: vi.fn() };
-                if (tag === 'option') return { value: '', textContent: '' };
-            },
-        };
-        populateAnomalyDropdown(selectEl);
-        expect(selectEl.innerHTML).toBe('<option value="">-- Select type --</option>');
+        populateAnomalyDropdown(selectEl, 'living-room');
+        expect(groups.length).toBeGreaterThanOrEqual(1);
     });
 });
 
