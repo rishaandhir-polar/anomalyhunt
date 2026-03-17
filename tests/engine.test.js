@@ -3,6 +3,7 @@ import { GameEngine } from '../src/core/engine.js';
 
 // Mock THREE.js
 vi.mock('three', () => {
+    const FakeGeometry = class { constructor() {} };
     class FakeScene {
         add = vi.fn();
     }
@@ -26,13 +27,37 @@ vi.mock('three', () => {
     class FakeLight {
         constructor() {}
     }
+    class FakeMesh {
+        constructor() {
+            this.position = { set: vi.fn(), x: 0, y: 0, z: 0, clone: () => ({ x: 0, y: 0, z: 0 }) };
+            this.rotation = { x: 0, y: 0, z: 0 };
+            this.material = {};
+        }
+    }
+    class FakeGroup {
+        constructor() { this.position = { set: vi.fn(), x: 0, y: 0, z: 0 }; }
+        add = vi.fn();
+        remove = vi.fn();
+    }
     return {
         Scene: FakeScene,
         PerspectiveCamera: FakeCamera,
         WebGLRenderer: FakeRenderer,
         AmbientLight: FakeLight,
         PCFShadowMap: 1,
-        Vector3: class { constructor(x, y, z) { this.x = x; this.y = y; this.z = z; } }
+        Vector3: class { constructor(x, y, z) { this.x = x; this.y = y; this.z = z; } },
+        // Geometry stubs
+        BoxGeometry: FakeGeometry,
+        CylinderGeometry: FakeGeometry,
+        SphereGeometry: FakeGeometry,
+        PlaneGeometry: FakeGeometry,
+        CapsuleGeometry: FakeGeometry,
+        // Material stubs
+        MeshStandardMaterial: class { constructor() {} },
+        MeshBasicMaterial: class { constructor() {} },
+        // Object stubs
+        Mesh: FakeMesh,
+        Group: FakeGroup,
     };
 });
 
@@ -42,8 +67,13 @@ vi.mock('../src/entities/room.js', () => ({
         constructor(name, dims, color, id) {
             this.name = name;
             this.dimensions = dims;
-            this.group = { position: { set: vi.fn(), x: 0, y: 0, z: 0 } };
+            this.group = { position: { set: vi.fn(), x: 0, y: 0, z: 0 }, add: vi.fn() };
+            this.objects = [];
+            this.light = { intensity: 1, color: { setHex: vi.fn(), getHex: () => 0xffffff } };
         }
+        addObj() { return { position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 } }; }
+        addRug() {}
+        addPlant() {}
     }
 }));
 
@@ -123,9 +153,9 @@ describe('GameEngine', () => {
     });
 
     describe('setupRooms', () => {
-        it('creates 6 rooms', () => {
+        it('creates 10 rooms', () => {
             const roomKeys = Object.keys(engine.rooms);
-            expect(roomKeys.length).toBe(6);
+            expect(roomKeys.length).toBe(10);
         });
 
         it('creates living-room', () => {
@@ -150,6 +180,22 @@ describe('GameEngine', () => {
 
         it('creates bathroom', () => {
             expect(engine.rooms['bathroom']).toBeDefined();
+        });
+
+        it('creates basement', () => {
+            expect(engine.rooms['basement']).toBeDefined();
+        });
+
+        it('creates attic', () => {
+            expect(engine.rooms['attic']).toBeDefined();
+        });
+
+        it('creates garage', () => {
+            expect(engine.rooms['garage']).toBeDefined();
+        });
+
+        it('creates nursery', () => {
+            expect(engine.rooms['nursery']).toBeDefined();
         });
 
         it('adds all rooms to scene', () => {

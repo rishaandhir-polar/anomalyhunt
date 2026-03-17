@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 import { TextureFactory } from '../core/textures.js';
-import {
-    setupLivingRoom, setupBedroom, setupKitchen,
-    setupOffice, setupBathroom, setupHallway
-} from './room-setups.js';
+import { setupLivingRoom, setupBedroom } from './room-setups.js';
+import { setupKitchen } from './room-setups-new.js';
+import { setupOffice, setupBathroom, setupHallway } from './room-setups-extended.js';
 
 export class Room {
     constructor(name, dimensions, lightColor = 0xffffff, type = 'generic') {

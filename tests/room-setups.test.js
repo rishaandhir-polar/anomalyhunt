@@ -1,8 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
-    setupLivingRoom, setupBedroom, setupKitchen,
-    setupOffice, setupBathroom, setupHallway
+    setupLivingRoom, setupBedroom
 } from '../src/entities/room-setups.js';
+import {
+    setupOffice, setupBathroom, setupHallway
+} from '../src/entities/room-setups-extended.js';
+import {
+    setupBasement, setupAttic, setupGarage, setupNursery, setupKitchen
+} from '../src/entities/room-setups-new.js';
 
 // Mock THREE.js
 vi.mock('three', () => ({
@@ -79,6 +84,16 @@ describe('Room Setups', () => {
             setupLivingRoom(mockRoom);
             expect(mockRoom.group.add).toHaveBeenCalled();
         });
+
+        it('creates curtains and stores reference', () => {
+            setupLivingRoom(mockRoom);
+            expect(mockRoom.curtains).toBeDefined();
+        });
+
+        it('creates mirror and stores reference', () => {
+            setupLivingRoom(mockRoom);
+            expect(mockRoom.mirror).toBeDefined();
+        });
     });
 
     describe('setupBedroom', () => {
@@ -113,6 +128,27 @@ describe('Room Setups', () => {
         it('adds plant', () => {
             setupBedroom(mockRoom);
             expect(mockRoom.addPlant).toHaveBeenCalled();
+        });
+
+        it('creates nightstand lamps array with 2 items', () => {
+            setupBedroom(mockRoom);
+            expect(mockRoom.nightstandLamps).toBeDefined();
+            expect(mockRoom.nightstandLamps).toHaveLength(2);
+        });
+
+        it('creates dresser and stores reference', () => {
+            setupBedroom(mockRoom);
+            expect(mockRoom.dresser).toBeDefined();
+        });
+
+        it('creates mirror and stores reference', () => {
+            setupBedroom(mockRoom);
+            expect(mockRoom.mirror).toBeDefined();
+        });
+
+        it('creates closet and stores reference', () => {
+            setupBedroom(mockRoom);
+            expect(mockRoom.closet).toBeDefined();
         });
     });
 
@@ -154,6 +190,22 @@ describe('Room Setups', () => {
             setupKitchen(mockRoom);
             expect(mockRoom.addPlant).toHaveBeenCalled();
         });
+
+        it('creates faucet and stores reference', () => {
+            setupKitchen(mockRoom);
+            expect(mockRoom.faucet).toBeDefined();
+        });
+
+        it('creates wall clock and stores reference', () => {
+            setupKitchen(mockRoom);
+            expect(mockRoom.clock).toBeDefined();
+        });
+
+        it('creates upper cabinets array with 3 items', () => {
+            setupKitchen(mockRoom);
+            expect(mockRoom.cabinets).toBeDefined();
+            expect(mockRoom.cabinets).toHaveLength(3);
+        });
     });
 
     describe('setupOffice', () => {
@@ -184,6 +236,21 @@ describe('Room Setups', () => {
         it('adds plants', () => {
             setupOffice(mockRoom);
             expect(mockRoom.addPlant).toHaveBeenCalledTimes(2);
+        });
+
+        it('creates bookshelf and stores reference', () => {
+            setupOffice(mockRoom);
+            expect(mockRoom.bookshelf).toBeDefined();
+        });
+
+        it('creates ceiling fan and stores reference', () => {
+            setupOffice(mockRoom);
+            expect(mockRoom.ceilingFan).toBeDefined();
+        });
+
+        it('creates monitor and stores reference', () => {
+            setupOffice(mockRoom);
+            expect(mockRoom.monitor).toBeDefined();
         });
     });
 
@@ -219,6 +286,27 @@ describe('Room Setups', () => {
             setupBathroom(mockRoom);
             expect(mockRoom.addPlant).toHaveBeenCalled();
         });
+
+        it('creates mirror and stores reference', () => {
+            setupBathroom(mockRoom);
+            expect(mockRoom.mirror).toBeDefined();
+        });
+
+        it('creates shower curtain and stores reference', () => {
+            setupBathroom(mockRoom);
+            expect(mockRoom.showerCurtain).toBeDefined();
+        });
+
+        it('creates towels array with 3 items', () => {
+            setupBathroom(mockRoom);
+            expect(mockRoom.towels).toBeDefined();
+            expect(mockRoom.towels).toHaveLength(3);
+        });
+
+        it('creates faucet and stores reference', () => {
+            setupBathroom(mockRoom);
+            expect(mockRoom.faucet).toBeDefined();
+        });
     });
 
     describe('setupHallway', () => {
@@ -236,6 +324,106 @@ describe('Room Setups', () => {
                 expect.any(Number),
                 expect.any(Number)
             );
+        });
+
+        it('creates coat rack and stores reference', () => {
+            setupHallway(mockRoom);
+            expect(mockRoom.coatRack).toBeDefined();
+        });
+
+        it('creates wall photos array with 3 items', () => {
+            setupHallway(mockRoom);
+            expect(mockRoom.wallPhotos).toBeDefined();
+            expect(mockRoom.wallPhotos).toHaveLength(3);
+        });
+
+        it('creates console table and stores reference', () => {
+            setupHallway(mockRoom);
+            expect(mockRoom.consoleTable).toBeDefined();
+        });
+    });
+
+    describe('setupBasement', () => {
+        it('creates storageBoxes array with 5 items', () => {
+            setupBasement(mockRoom);
+            expect(mockRoom.storageBoxes).toBeDefined();
+            expect(mockRoom.storageBoxes).toHaveLength(5);
+        });
+
+        it('creates waterHeater and stores reference', () => {
+            setupBasement(mockRoom);
+            expect(mockRoom.waterHeater).toBeDefined();
+        });
+
+        it('calls addObj more than 8 times', () => {
+            setupBasement(mockRoom);
+            expect(mockRoom.addObj.mock.calls.length).toBeGreaterThan(8);
+        });
+    });
+
+    describe('setupAttic', () => {
+        it('creates oldFurniture array with 3 items', () => {
+            setupAttic(mockRoom);
+            expect(mockRoom.oldFurniture).toBeDefined();
+            expect(mockRoom.oldFurniture).toHaveLength(3);
+        });
+
+        it('creates cobwebs array with 4 items', () => {
+            setupAttic(mockRoom);
+            expect(mockRoom.cobwebs).toBeDefined();
+            expect(mockRoom.cobwebs).toHaveLength(4);
+        });
+
+        it('calls addObj more than 8 times', () => {
+            setupAttic(mockRoom);
+            expect(mockRoom.addObj.mock.calls.length).toBeGreaterThan(8);
+        });
+    });
+
+    describe('setupGarage', () => {
+        it('creates car.body and stores reference', () => {
+            setupGarage(mockRoom);
+            expect(mockRoom.car).toBeDefined();
+            expect(mockRoom.car.body).toBeDefined();
+        });
+
+        it('creates car.wheels array with 4 items', () => {
+            setupGarage(mockRoom);
+            expect(mockRoom.car.wheels).toHaveLength(4);
+        });
+
+        it('creates workbench and stores reference', () => {
+            setupGarage(mockRoom);
+            expect(mockRoom.workbench).toBeDefined();
+        });
+
+        it('creates tools array with 5 items', () => {
+            setupGarage(mockRoom);
+            expect(mockRoom.tools).toBeDefined();
+            expect(mockRoom.tools).toHaveLength(5);
+        });
+    });
+
+    describe('setupNursery', () => {
+        it('creates crib and stores reference', () => {
+            setupNursery(mockRoom);
+            expect(mockRoom.crib).toBeDefined();
+        });
+
+        it('creates toys array with 5 items', () => {
+            setupNursery(mockRoom);
+            expect(mockRoom.toys).toBeDefined();
+            expect(mockRoom.toys).toHaveLength(5);
+        });
+
+        it('creates rockingChair and stores reference', () => {
+            setupNursery(mockRoom);
+            expect(mockRoom.rockingChair).toBeDefined();
+        });
+
+        it('creates mobile and stores reference', () => {
+            setupNursery(mockRoom);
+            expect(mockRoom.mobile).toBeDefined();
         });
     });
 });

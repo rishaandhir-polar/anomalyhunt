@@ -51,10 +51,17 @@ vi.mock('../src/core/textures.js', () => ({
 vi.mock('../src/entities/room-setups.js', () => ({
     setupLivingRoom: vi.fn(),
     setupBedroom: vi.fn(),
-    setupKitchen: vi.fn(),
     setupOffice: vi.fn(),
     setupBathroom: vi.fn(),
     setupHallway: vi.fn()
+}));
+
+vi.mock('../src/entities/room-setups-new.js', () => ({
+    setupKitchen: vi.fn(),
+    setupBasement: vi.fn(),
+    setupAttic: vi.fn(),
+    setupGarage: vi.fn(),
+    setupNursery: vi.fn(),
 }));
 
 describe('Room', () => {
@@ -132,7 +139,7 @@ describe('Room', () => {
         });
 
         it('calls room setup function for kitchen type', async () => {
-            const { setupKitchen } = await import('../src/entities/room-setups.js');
+            const { setupKitchen } = await import('../src/entities/room-setups-new.js');
             room = new Room('Kitchen', { x: 10, y: 6, z: 10 }, 0xffffff, 'kitchen');
             expect(setupKitchen).toHaveBeenCalledWith(room);
         });

@@ -18,6 +18,7 @@ vi.mock('three', () => {
     class FakeBasicMat { constructor(opts) { Object.assign(this, opts); } }
     class FakeSphereGeo { constructor() { } }
     class FakeCapsuleGeo { constructor() { } }
+    class FakeBoxGeo { constructor() { } }
 
     return {
         Mesh: FakeMesh,
@@ -26,6 +27,7 @@ vi.mock('three', () => {
         MeshBasicMaterial: FakeBasicMat,
         SphereGeometry: FakeSphereGeo,
         CapsuleGeometry: FakeCapsuleGeo,
+        BoxGeometry: FakeBoxGeo,
     };
 });
 
